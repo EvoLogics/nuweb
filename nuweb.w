@@ -893,7 +893,6 @@ construction of the \verb|.tex| file
 @o latex.c -cc
 @{#include "global.h"
 static int scraps = 1;
-int extra_scraps;
 @}
 
 The file \verb|html.c| contains the code controlling the
@@ -902,7 +901,6 @@ construction of the \verb|.tex| file appropriate for use with {\LaTeX}2HTML
 @o html.c
 @{#include "global.h"
 static int scraps = 1;
-int extra_scraps;
 @}
 
 The code controlling the creation of the output files is in \verb|output.c|
@@ -1508,8 +1506,8 @@ c = source_get();
 @}
 
 @d Global variable declar...
-@{unsigned char current_sector;
-unsigned char prev_sector;
+@{extern unsigned char current_sector;
+extern unsigned char prev_sector;
 @| current_sector prev_sector @}
 
 @d Global variable def...
@@ -1706,8 +1704,12 @@ while ((c = source_get()), c != nw_char && c != EOF)/* Skip */
 source_ungetc(&c);@}
 
 @d Global variable declar...
-@{char blockBuff[6400];
+@{extern char blockBuff[6400];
 @| blockBuff @}
+
+@d Global variable def...
+@{char blockBuff[6400];
+@}
 
 We don't show block comments inside scraps in the \TeX\ file,
 but we do show where they go.
@@ -2416,9 +2418,13 @@ a scrap will not be indented. Again, this is a matter of personal taste.
   while (isspace(c));
 }@}
 
-@d Global variable dec...
+@d Global variable declar...
 @{extern int extra_scraps;
-@}
+@| extra_scraps @}
+
+@d Global variable def...
+@{int extra_scraps = 0;
+ @}
 
 @d Write in-text scrap
 @{copy_scrap(tex_file, FALSE, NULL);
