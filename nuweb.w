@@ -129,7 +129,7 @@ urlcolor={linkcolor}%
 \setlength{\textwidth}{6.5in}
 \setlength{\marginparwidth}{0.5in}
 
-\title{Nuweb Version 1.60 \\ A Simple Literate Programming Tool}
+\title{Nuweb Version 1.61 \\ A Simple Literate Programming Tool}
 \date{}
 \author{Preston Briggs\thanks{This work has been supported by ARPA,
 through ONR grant N00014-91-J-1989.}
@@ -833,7 +833,6 @@ recompilation during development.
 We'll need at least five of the standard system include files.
 @d Include files
 @{
-/* #include <fcntl.h> */
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -2198,11 +2197,9 @@ c = source_get();
    Arglist *a;
    Name *name;
    Arglist * args;
-   char * * inParams;
    a = collect_scrap_name(0);
    name = a->name;
    args = instance(a->args, NULL, NULL, &changed);
-   inParams = name->arg;
    name->mark = TRUE;
    write_scraps(@1, tex_name, name->defs, 0, indent_chars, 0, 0, 1, 0,
          args, name->arg, local_parameters, tex_name);
@@ -2654,8 +2651,6 @@ this function. It updates the scrap formatting directives accordingly.
 @o latex.c
 @{void update_delimit_scrap()
 {
-  static int been_here_before = 0;
-
   /* {}-mode begin */
   if (listings_flag) {
     delimit_scrap[0][0][10] = nw_char;
@@ -3255,7 +3250,6 @@ static void display_scrap_ref();        /* formats a scrap reference */
 static void display_scrap_numbers();    /* formats a list of scrap numbers */
 static void print_scrap_numbers();      /* pluralizes scrap formats list */
 static void format_entry();             /* formats an index entry */
-static void format_file_entry();        /* formats a file index entry */
 static void format_user_entry();
 @}
 
@@ -3823,7 +3817,6 @@ pointed out any during the first pass.
   static char real_name[FILENAME_MAX];
   static int temp_name_count = 0;
   char indent_chars[MAX_INDENT];
-  int temp_file_fd;
   FILE *temp_file;
 
   @< Find a free temporary file @>
@@ -4552,7 +4545,6 @@ add_to_use(Name * name, int current_scrap)
      int n;
      Manager *manager;
 {
-  Slab *scrap = manager->scrap;
   int index = manager->index;
   if (n > index
       && manager->prev != NULL)
@@ -4644,10 +4636,12 @@ a->next = next;@}
 {
   char name[MAX_NAME_LEN];
   char *p = name;
-  int sector = pop(manager);
-  int c = pop(manager);
   Arglist * args;
+  int c;
 
+  (void)pop(manager); /* not sure why we have to pop twice */
+  c = pop(manager);
+  
   while (c != nw_char) {
     *p++ = c;
     c = pop(manager);
@@ -4666,7 +4660,6 @@ a->next = next;@}
 
 @d Check for end of scrap name
 @{{
-  Name *pn;
   c = pop(manager);
   @<Check for macro parameters@>
 }@}
@@ -4692,7 +4685,6 @@ a->next = next;@}
   /* This is in file @f */
   int indent = 0;
   int newline = 1;
-  int iter = 0;
   while (defs) {
     @<Copy \verb|defs->scrap| to \verb|file|@>
     defs = defs->next;
@@ -5904,7 +5896,7 @@ solution~\cite{aho:75}.
 @| Move_Node @}
 
 @o scraps.c -cc
-@{static Goto_Node *root[128];
+@{static Goto_Node *root[256];
 static int max_depth;
 static Goto_Node **depths;
 @| root max_depth depths @}
@@ -6100,11 +6092,11 @@ void search()
   int depth = 2;
   char *p = tree->spelling;
   char c = *p++;
-  Goto_Node *q = root[c];
+  Goto_Node *q = root[(unsigned char)c];
   Name_Node * last;
   if (!q) {
     q = (Goto_Node *) arena_getmem(sizeof(Goto_Node));
-    root[c] = q;
+    root[(unsigned char)c] = q;
     q->moves = NULL;
     q->fail = NULL;
     q->moves = NULL;
@@ -6165,7 +6157,7 @@ void search()
         if (state)
           s->fail = goto_lookup(a, state);
         else
-          s->fail = root[a];
+          s->fail = root[(unsigned char)a];
         if (s->fail) {
           Name_Node *p = s->fail->output;
           while (p) {
@@ -6205,7 +6197,7 @@ void search()
       if (state)
         state = goto_lookup(c, state);
       else
-        state = root[c];
+        state = root[(unsigned char)c];
       @<Skip over at at@>
       @<Skip over a scrap use@>
       @<Skip over a block comment@>
