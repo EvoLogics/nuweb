@@ -1,0 +1,14 @@
+*.c
+*.h
+nuweb
+nuweb.1
+nuweb.aux
+nuweb.bbl
+nuweb.blg
+nuweb.brf
+nuweb.dvi
+nuweb.log
+nuweb.out
+nuweb.pdf
+nuweb.tex
+nuweb.toc

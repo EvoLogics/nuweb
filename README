@@ -1,6 +1,5 @@
-Here's an intermediate version of nuweb.  We've bundled up the web
-source (nuweb.w), the generated .c files and the assorted auxiliary
-files for latex'ing with a Makefile.
+We've bundled up the web source (nuweb.w), the generated .c files and
+the assorted auxiliary files for latex'ing with a Makefile.
 
 Note that it's still not completely portable to every system without
 change.  In particular, it expects file-names to use '/' to delimit
@@ -30,6 +29,10 @@ using LaTeX2HTML.
 
 For the latest version check the SourceForge page:
     http://nuweb.sourceforge.net/
+
+Changes in Version 1.61:
+Moved versioning system to git.
+Corrected link failure with latest GCC, and clang on some systems.
 
 Changes in Version 1.60:
 Made version number consistent between nuweb.w and tag.

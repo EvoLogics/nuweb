@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -g
 
 TARGET = nuweb
-VERSION = 1.60
+VERSION = 1.61
 
 OBJS = main.o pass1.o latex.o html.o output.o input.o scraps.o names.o \
 	arena.o global.o
@@ -21,9 +21,9 @@ DIST = Makefile README nuweb.w nuwebsty.w test htdocs nuweb.el \
 	$(TARGET)doc.tex $(SRCS) $(HDRS) $(BIBS) $(STYS)
 
 %.tex: %.w
-	nuweb -r $<
+	./nuweb -r $<
 	latex $(basename $<)
-	nuweb -r $<
+	./nuweb -r $<
 
 %: %.tex
 	latex2html -split 0 $(basename $<)
