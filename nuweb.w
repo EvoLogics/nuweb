@@ -4158,7 +4158,7 @@ typedef struct slab {
   struct slab *next;
   char chars[SLAB_SIZE];
 } Slab;
-@| Slab SLAB_SIZE @}
+@| Slab next SLAB_SIZE @}
 
 @o scraps.c -cc
 @{typedef struct {
@@ -4171,12 +4171,19 @@ typedef struct slab {
   char letter;
   unsigned char sector;
 } ScrapEntry;
-@| ScrapEntry @}
+@| file_name slab uses defs file_line page letter sector ScrapEntry @}
+
+There's some issue with reading the auxiliary file if it has more than 255 lines, so (as a workround only) increase the size of the array of \verb|ScrapEntry|s held in \verb|SCRAP[n]|.
 
 @o scraps.c -cc
-@{static ScrapEntry *SCRAP[256];
+@{
+#define SCRAP_BITS 10
+#define SCRAP_SIZE (1<<SCRAP_BITS)
+#define SCRAP_MASK (SCRAP_SIZE - 1)
+#define SCRAP_SHIFT SCRAP_BITS
+static ScrapEntry *SCRAP[SCRAP_SIZE];
 
-#define scrap_array(i) SCRAP[(i) >> 8][(i) & 255]
+#define scrap_array(i) SCRAP[(i) >> SCRAP_SHIFT][(i) & SCRAP_MASK]
 
 static int scraps;
 int num_scraps()
@@ -4184,7 +4191,7 @@ int num_scraps()
    return scraps;
 };
 @<Forward declarations for scraps.c@>
-@| num_scraps scraps scrap_array SCRAP @}
+@| num_scraps scraps scrap_array SCRAP_BITS SCRAP_SIZE SCRAP_MASK SCRAP_SHIFT SCRAP @}
 
 
 @d Function pro...
@@ -4201,7 +4208,7 @@ extern int num_scraps();
 @{void init_scraps()
 {
   scraps = 1;
-  SCRAP[0] = (ScrapEntry *) arena_getmem(256 * sizeof(ScrapEntry));
+  SCRAP[0] = (ScrapEntry *) arena_getmem(SCRAP_SIZE * sizeof(ScrapEntry));
 }
 @| init_scraps @}
 
@@ -4312,8 +4319,8 @@ extern int num_scraps();
 @d Create new scrap, managed by \verb|writer|
 @{{
   Slab *scrap = (Slab *) arena_getmem(sizeof(Slab));
-  if ((scraps & 255) == 0)
-    SCRAP[scraps >> 8] = (ScrapEntry *) arena_getmem(256 * sizeof(ScrapEntry));
+  if ((scraps & SCRAP_MASK) == 0)
+    SCRAP[scraps >> SCRAP_SHIFT] = (ScrapEntry *) arena_getmem(SCRAP_SIZE * sizeof(ScrapEntry));
   scrap_array(scraps).slab = scrap;
   scrap_array(scraps).file_name = save_string(source_name);
   scrap_array(scraps).file_line = source_line;
