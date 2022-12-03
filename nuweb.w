@@ -540,6 +540,10 @@ The fragment named is expanded in place in the text.
 The expansion is presented verbatim, it is not interpretted for
 typesetting, so any special environment must be set up before and
 after this is used.
+\item[\tt @@c] Outside of a scrap this is used to define a block
+comment using all the text until the next command. Inside a scrap
+the last block comment is expanded using the current indentation
+and breaking lines between words if 60 characters are exceeded.
 \end{description}
 
 Finally, there are three commands used to create indices to the
