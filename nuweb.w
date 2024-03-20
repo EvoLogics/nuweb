@@ -31,6 +31,7 @@
 %
 
 % Notes:
+% For updates after 2011-12-16, notes are in the Git log.
 % Update on 2011-12-16 from Keith Harwood.
 % -- @@s in scrap supresses indent of following fragment expansion
 % -- @@<Name@@> in text is expanded

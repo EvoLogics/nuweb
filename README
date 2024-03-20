@@ -30,6 +30,10 @@ using LaTeX2HTML.
 For the latest version check the SourceForge page:
     http://nuweb.sourceforge.net/
 
+Changes in Version 1.63:
+No functional change.
+Ensured that the archive contains no extended attributes.
+
 Changes in Version 1.62:
 Worked round issue with large number of scraps, cause obscure;
 see bug #29.
