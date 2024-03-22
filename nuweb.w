@@ -130,7 +130,7 @@ urlcolor={linkcolor}%
 \setlength{\textwidth}{6.5in}
 \setlength{\marginparwidth}{0.5in}
 
-\title{Nuweb Version 1.62 \\ A Simple Literate Programming Tool}
+\title{Nuweb Version 1.64 \\ A Simple Literate Programming Tool}
 \date{}
 \author{Preston Briggs\thanks{This work has been supported by ARPA,
 through ONR grant N00014-91-J-1989.}
@@ -139,10 +139,10 @@ through ONR grant N00014-91-J-1989.}
 \\ {\sl ramsdell@@mitre.org}
 \\ Scrap formatting by Marc W. Mengel
 \\ {\sl mengel@@fnal.gov}
+\\ New-style fragment parameters and tests by Keith Harwood
+\\ {\sl Keith.Harwood@@vitalmis.com}
 \\ Continuing maintenance by Simon Wright
-\\ {\sl simon@@pushface.org}
-\\ and Keith Harwood
-\\ {\sl Keith.Harwood@@vitalmis.com}}
+\\ {\sl simon@@pushface.org} }
 
 \begin{document}
 \pagenumbering{roman}
@@ -699,6 +699,11 @@ There are several additional command-line flags:
   are never referenced, in indices, etc.
 \item[\tt -p {\it path}] Prepend \textit{path} to the filenames for
 all the output files.
+\item[\tt -x] Include cross-reference numbers in scrap comments.
+\item[\tt -h {\it options}] Provide options for the hyperref
+package.
+\item[\tt -r] Turn on hyperlinks. You must include the |usepackage|
+options in the text.
 \item[\tt -l] \label{sec:pretty-print} Use the \texttt{listings}
 package for formatting scraps. Use this if you want to have a
 pretty-printer for your scraps. In order to e.g. have pretty Perl
@@ -716,7 +721,7 @@ options. Be sure to include a \texttt{\char92
 usepackage\{listings\}}
 in your document.
 
-\item[\tt -V \it string] Provide \textit{string} as the
+\item[\tt -V {\it string}] Provide \textit{string} as the
 replacement for the @@v operation.
 \end{description}
 
@@ -1006,12 +1011,13 @@ There are numerous possible command-line arguments:
 \item[\tt -s] Doesn't print list of scraps making up file at end of
   each scrap.
 \item[\tt -x] Include cross-reference numbers in scrap comments.
-\item[\tt -p \it path] Prepend \textit{path} to the filenames for
+\item[\tt -p {\it path}] Prepend \textit{path} to the filenames for
 all the output files.
-\item[\tt -h \it options] Provide options for the hyperref
+\item[\tt -h {\it options}] Provide options for the hyperref
 package.
 \item[\tt -r] Turn on hyperlinks. You must include the |usepackage|
 options in the text.
+\item[\tt -l] Use the \texttt{listings} package for formatting scraps.
 \end{description}
 
 There are two ways to get hyper-links into your documentation. With
@@ -4653,7 +4659,7 @@ a->next = next;@}
 
   (void)pop(manager); /* not sure why we have to pop twice */
   c = pop(manager);
-  
+
   while (c != nw_char) {
     *p++ = c;
     c = pop(manager);

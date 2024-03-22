@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -g
 
 TARGET = nuweb
-VERSION = 1.63
+VERSION = 1.64
 
 OBJS = main.o pass1.o latex.o html.o output.o input.o scraps.o names.o \
 	arena.o global.o
@@ -47,9 +47,10 @@ all:
 	$(MAKE) $(TARGET).tex
 	$(MAKE) $(TARGET)
 
-tar: $(TARGET)doc.tex
+tar: $(TARGET)doc.tex nuweb.pdf nuwebdoc.pdf
 	-rm -rf $(TARGET)-$(VERSION)
 	mkdir $(TARGET)-$(VERSION)
+	cp nuweb*.pdf htdocs/
 	cp -R $(DIST) $(TARGET)-$(VERSION)
 	if [ $$(uname) == Darwin ]; then	\
 	  xattr -c -r $(TARGET)-$(VERSION);	\
@@ -57,7 +58,7 @@ tar: $(TARGET)doc.tex
 	tar -zcf $(TARGET)-$(VERSION).tar.gz $(TARGET)-$(VERSION)
 	rm -rf $(TARGET)-$(VERSION)
 
-distribution: all tar nuweb.pdf nuwebdoc.pdf
+distribution: all tar
 
 $(TARGET)doc.tex: $(TARGET).tex
 	sed -e '/^\\ifshowcode$$/,/^\\fi$$/d' $< > $@
