@@ -964,9 +964,7 @@ then handles any files listed on the command line.
 @o main.c -cc
 @{
 #include <stdlib.h>
-int main(argc, argv)
-     int argc;
-     char **argv;
+int main(int argc, char **argv)
 {
   int arg = 1;
   @<Interpret command-line arguments@>
