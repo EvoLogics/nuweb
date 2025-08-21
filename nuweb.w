@@ -1333,13 +1333,13 @@ this scrap.
   if (dot) {
     *dot = '\0'; /* produce HTML when the file extension is ".hw" */
     html_flag = dot[1] == 'h' && dot[2] == 'w' && dot[3] == '\0';
-    sprintf(tex_name, "%s%s%s.tex", dirpath, path_sep, trim);
-    sprintf(aux_name, "%s%s%s.aux", dirpath, path_sep, trim);
+    snprintf(tex_name, sizeof(tex_name), "%s%s%s.tex", dirpath, path_sep, trim);
+    snprintf(aux_name, sizeof(aux_name), "%s%s%s.aux", dirpath, path_sep, trim);
     *dot = '.';
   }
   else {
-    sprintf(tex_name, "%s%s%s.tex", dirpath, path_sep, trim);
-    sprintf(aux_name, "%s%s%s.aux", dirpath, path_sep, trim);
+    snprintf(tex_name, sizeof(tex_name), "%s%s%s.tex", dirpath, path_sep, trim);
+    snprintf(aux_name, sizeof(aux_name), "%s%s%s.aux", dirpath, path_sep, trim);
     *q++ = '.';
     *q++ = 'w';
     *q = '\0';
@@ -1469,7 +1469,9 @@ discovered.
     case 'o': @<Build output file definition@>
               break;
     case 'Q':
-    case 'q': quoted = 1;
+    case 'q':
+    	quoted = 1;
+	/* fallthrough */
     case 'D':
     case 'd': @<Build fragment definition@>
               break;
@@ -2069,6 +2071,7 @@ name of the web source file and the name of the \verb|.tex| output file.
      char *tex_name;
      unsigned char sector;
 {
+  (void)sector;
   FILE *tex_file = fopen(tex_name, "w");
   if (tex_file) {
     if (verbose_flag)
@@ -2152,10 +2155,12 @@ an eye peeled for \verb|@@|~characters, which signal a command sequence.
           update_delimit_scrap();
           break;
     case 'O': big_definition = TRUE;
+    	/* fallthrough */
     case 'o': @<Write output file definition@>
               break;
     case 'Q':
     case 'D': big_definition = TRUE;
+    	/* fallthrough */
     case 'q':
     case 'd': @<Write macro definition@>
               break;
@@ -2716,6 +2721,7 @@ this function. It updates the scrap formatting directives accordingly.
     case '-':
     case '*':
     case '|': @<Skip over index entries@>
+    	/* fallthrough */
     case ',':
     case ')':
     case ']':
@@ -3271,6 +3277,7 @@ name of the web source file and the name of the \verb|.tex| output file.
      char *html_name;
      int dummy;
 {
+  (void)dummy;
   FILE *html_file = fopen(html_name, "w");
   FILE *tex_file = html_file;
   @<Write LaTeX limbo definitions@>
@@ -3529,6 +3536,7 @@ We must translate HTML special keywords into entities in scraps.
      FILE *file;
      int prefix;
 {
+  (void)prefix;
   int indent = 0;
   int c = source_get();
   while (1) {
@@ -3979,7 +3987,9 @@ int source_get()
   switch (c) {
     case EOF:  @<Handle \verb|EOF|@>
                return c;
-    case '\n': source_line++;
+    case '\n':
+    	source_line++;
+	/* fallthrough */
     default:
            if (c==nw_char)
              {
@@ -5086,7 +5096,7 @@ to wait for the matching closing brace.
 @d Read line in \verb|.aux| file @{@%
 int scrap_number;
 int page_number;
-int i;
+size_t i;
 int dummy_idx;
 int bracket_depth = 1;
 if (1 == sscanf(aux_line,
@@ -5097,7 +5107,7 @@ if (1 == sscanf(aux_line,
     if (aux_line[i] == '{') bracket_depth++;
     else if (aux_line[i] == '}') bracket_depth--;
   }
-  if (i > dummy_idx
+  if (i > (size_t)dummy_idx
       && i < strlen(aux_line)
       && 1 == sscanf(aux_line+i, "{%d}" ,&page_number)) {
     if (scrap_number < scraps)
@@ -5256,6 +5266,7 @@ Name *prefix_add(rt, spelling, sector)
                     break;
     case EQUAL:
                     found_name = node->spelling;
+		    /* fallthrough */
     case EXTENSION: if (node->sector > sector) {
                        rt = &node->rlink;
                        break;
