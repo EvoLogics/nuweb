@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -g -Wall -Wextra -Wno-old-style-definition
 
 TARGET = nuweb
-VERSION = 1.64
+VERSION = 1.64-evofixes
 
 OBJS = main.o pass1.o latex.o html.o output.o input.o scraps.o names.o \
 	arena.o global.o
